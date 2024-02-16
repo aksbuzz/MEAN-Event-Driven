@@ -1,0 +1,31 @@
+{
+  "name": "comments",
+  "version": "1.0.0",
+  "description": "Comments service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "format": "prettier --write {**/,}*.js",
+    "lint": "prettier --check {**/,}*.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "aksbuzz",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "loglevel": "^1.9.1",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.1.2",
+    "simple-node-logger": "^21.8.12",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.5"
+  }
+}
