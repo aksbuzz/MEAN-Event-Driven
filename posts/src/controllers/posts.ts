@@ -1,0 +1,71 @@
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { z } from 'zod';
+import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../../common/dist';
+import { nats } from '../lib/nats';
+import { Post } from '../models/post';
+import { PostCreatedPublisher, PostUpdatedPublisher } from '../publishers';
+import { validate } from '../util/validate';
+
+type PostBody = { title: string; content: string };
+type PostParam = { id: string };
+const schema = z.object({ title: z.string(), content: z.string() });
+
+export async function getPosts(_request: FastifyRequest, reply: FastifyReply) {
+  const posts = await Post.find({});
+  reply.status(200).send(posts);
+}
+
+export async function create(request: FastifyRequest<{ Body: PostBody }>, reply: FastifyReply) {
+  const { title, content } = request.body;
+
+  const validationErrors = validate(request.body, schema);
+  if (validationErrors) {
+    throw new BadRequestError(validationErrors);
+  }
+
+  const post = new Post({ title, content, userId: request.user });
+  await post.save();
+
+  new PostCreatedPublisher(nats.nc).publish({ id: post.id, title, content });
+
+  reply.status(201).send(post);
+}
+
+export async function update(
+  request: FastifyRequest<{ Body: PostBody; Params: PostParam }>,
+  reply: FastifyReply
+) {
+  const { title, content } = request.body;
+  const { id } = request.params;
+
+  const validationErrors = validate(request.body, schema);
+  if (validationErrors) {
+    throw new BadRequestError(validationErrors);
+  }
+
+  const post = await Post.findById(id);
+  if (!post) {
+    throw new NotFoundError('Post');
+  }
+
+  if (post.userId !== request.user) {
+    throw new NotAuthorizedError('Not authorized to update post');
+  }
+
+  post.set({ title, content });
+  await post.save();
+
+  new PostUpdatedPublisher(nats.nc).publish({ id: post.id, title, content, userId: post.userId });
+
+  reply.status(200).send(post);
+}
+
+export async function getPost(request: FastifyRequest<{ Params: PostParam }>, reply: FastifyReply) {
+  const { id } = request.params;
+  const post = await Post.findById(id);
+  if (!post) {
+    throw new NotFoundError('Post');
+  }
+
+  reply.status(200).send(post);
+}

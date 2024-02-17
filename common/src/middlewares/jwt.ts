@@ -5,7 +5,7 @@ import { verifyToken } from '../util/jwt-token';
 export async function jwtAuth(request: FastifyRequest, reply: FastifyReply) {
   const { url, method } = request;
   // skip for ping route
-  if (url.startsWith('/api/users/ping')) return;
+  if (url.startsWith('/api/users/ping') || url.startsWith('/api/posts/ping')) return;
   // skip for auth routes
   if (url.startsWith('/api/users/auth')) return;
 
