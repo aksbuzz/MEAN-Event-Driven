@@ -12,6 +12,7 @@ function registerPostRoutes(server: FastifyInstance) {
   server.get('/:id', posts.getPost);
   server.post('/', posts.create);
   server.put('/:id', posts.update);
+  // server.delete('/:id', posts.remove);
 }
 
 function registerSystemRoutes(server: FastifyInstance) {

@@ -3,7 +3,7 @@ import { errorHandler, jwtAuth, RouteNotFoundError } from '../../common/dist';
 import { newDbConnection } from './db';
 import { nats } from './lib/nats';
 import { registerRoutes } from './routes';
-import { CommentCreatedSubscriber } from './subscribers';
+import { PostCreatedSubscriber } from './subscribers';
 
 async function startDb() {
   try {
@@ -39,7 +39,7 @@ async function startServer() {
       registerRoutes(app);
       done();
     },
-    { prefix: '/api/posts' }
+    { prefix: '/api/comments' }
   );
   server.all('*', async request => {
     throw new RouteNotFoundError(request.url);
@@ -48,8 +48,8 @@ async function startServer() {
   server.setErrorHandler(errorHandler);
 
   try {
-    await server.listen({ port: 3002 });
-    server.log.info(`Server listening on 3002`);
+    await server.listen({ port: 3003 });
+    server.log.info(`Server listening on 3003`);
   } catch (error) {
     server.log.error(error);
     process.exit(1);
@@ -61,7 +61,7 @@ async function main() {
   await startNatsServer();
   await startServer();
 
-  new CommentCreatedSubscriber(nats.nc).subscribe();
+  new PostCreatedSubscriber(nats.nc).subscribe();
 }
 
 main();

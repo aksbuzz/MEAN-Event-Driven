@@ -1,0 +1,30 @@
+import { NotFoundError } from '../../../common/dist';
+import { CommentCreatedEvent } from '../events';
+import { Post } from '../models/post';
+import { BaseSubscriber } from './base.subscriber';
+
+export class CommentCreatedSubscriber extends BaseSubscriber<CommentCreatedEvent> {
+  subject: CommentCreatedEvent['subject'] = 'comment:created';
+  async onMessage(data: CommentCreatedEvent['data']) {
+    try {
+      const commentId = data.id,
+        postId = data.postId;
+
+      console.log(`New comment created (ID: ${commentId}) on post ${postId}`);
+
+      const post = await Post.findById(postId);
+      if (!post) {
+        throw new NotFoundError('Post');
+      }
+
+      // TODO
+      const existingComments = post.comments;
+      post.set({ comments: [...existingComments, commentId] });
+      post.save();
+
+      console.log(`Added comment (ID: ${commentId}) to post ${postId}`);
+    } catch (error) {
+      throw new Error('Error adding comment to post');
+    }
+  }
+}
