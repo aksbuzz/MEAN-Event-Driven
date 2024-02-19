@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import { BadRequestError, NotFoundError, generateToken } from '../../../common/dist';
+import { BadRequestError, NotFoundError } from '../../../common/dist/errors';
+import { generateToken, validate } from '../../../common/dist/util';
 import { User, UserRequest } from '../models/user';
 import { comparePassword, toHash } from '../util/password-hash';
-import { validate } from '../util/validate';
 
 const schema = z.object({
   email: z.string().email(),
