@@ -1,15 +1,14 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../../common/dist';
-import { nats } from '../lib/nats';
+import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../../common/dist/errors';
+import { nats } from '../../../common/dist/infrastructure';
+import { validate } from '../../../common/dist/util';
 import { Post } from '../models/post';
 import { PostCreatedPublisher, PostUpdatedPublisher } from '../publishers';
-import { validate } from '../util/validate';
 
-type PostBody = { title: string; content: string; comments?: [] };
+const schema = z.object({ title: z.string(), content: z.string(), comments: z.array(z.any()) });
 type PostParam = { id: string };
-// TODO: add validation for comments array
-const schema = z.object({ title: z.string(), content: z.string() });
+type PostBody = z.TypeOf<typeof schema>;
 
 export async function getPosts(_request: FastifyRequest, reply: FastifyReply) {
   const posts = await Post.find({});

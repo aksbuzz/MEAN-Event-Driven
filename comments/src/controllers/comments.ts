@@ -1,18 +1,17 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../../common/dist';
-import { nats } from '../lib/nats';
-import { Comment, CommentDoc } from '../models/comment';
+import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../../common/dist/errors';
+import { nats } from '../../../common/dist/infrastructure';
+import { validate } from '../../../common/dist/util';
+import { Comment } from '../models/comment';
 import { CommentCreatedPublisher, CommentUpdatedPublisher } from '../publishers';
-import { validate } from '../util/validate';
 
-type CommentParam = { id: string };
 const schema = z.object({
   content: z.string(),
   postId: z.string(),
 });
-// TODO: infer type from schema
-type CommentBody = { content: string; postId: string };
+type CommentParam = { id: string };
+type CommentBody = z.TypeOf<typeof schema>;
 
 export async function create(request: FastifyRequest<{ Body: CommentBody }>, reply: FastifyReply) {
   const validationErrors = validate(request.body, schema);

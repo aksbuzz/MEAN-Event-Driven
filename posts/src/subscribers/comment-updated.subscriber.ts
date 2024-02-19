@@ -1,5 +1,5 @@
+import { BaseSubscriber } from '../../../common/dist/subscribers';
 import { CommentUpdatedEvent } from '../events';
-import { BaseSubscriber } from './base.subscriber';
 
 export class CommentUpdatedSubscriber extends BaseSubscriber<CommentUpdatedEvent> {
   subject: CommentUpdatedEvent['subject'] = 'comment:updated';

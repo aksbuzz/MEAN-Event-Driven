@@ -1,14 +1,14 @@
 import fastify from 'fastify';
-import { errorHandler, jwtAuth, RouteNotFoundError } from '../../common/dist';
-import { newDbConnection } from './db';
-import { nats } from './lib/nats';
+import { RouteNotFoundError } from '../../common/dist/errors';
+import { nats, newDbConnection } from '../../common/dist/infrastructure';
+import { errorHandler, jwtAuth } from '../../common/dist/middlewares';
 import { registerRoutes } from './routes';
 import { CommentCreatedSubscriber } from './subscribers';
 
 async function startDb() {
   try {
     console.log('Connecting to MongoDB');
-    await newDbConnection();
+    await newDbConnection({ uri: 'mongodb://localhost:27017/post' });
     console.log('MongoDB is connected');
   } catch (error) {
     console.log('MongoDB connection unsuccessful. ', error);

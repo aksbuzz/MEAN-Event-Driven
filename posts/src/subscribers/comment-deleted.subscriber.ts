@@ -1,7 +1,7 @@
-import { NotFoundError } from '../../../common/dist';
+import { NotFoundError } from '../../../common/dist/errors';
+import { BaseSubscriber } from '../../../common/dist/subscribers';
 import { CommentDeletedEvent } from '../events';
 import { Post } from '../models/post';
-import { BaseSubscriber } from './base.subscriber';
 
 export class CommentDeletedSubscriber extends BaseSubscriber<CommentDeletedEvent> {
   subject: CommentDeletedEvent['subject'] = 'comment:deleted';

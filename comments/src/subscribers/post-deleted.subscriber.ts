@@ -1,5 +1,5 @@
+import { BaseSubscriber } from '../../../common/dist/subscribers';
 import { PostDeletedEvent } from '../events';
-import { BaseSubscriber } from './base.subscriber';
 
 export class PostDeletedSubscriber extends BaseSubscriber<PostDeletedEvent> {
   subject: PostDeletedEvent['subject'] = 'post:deleted';
