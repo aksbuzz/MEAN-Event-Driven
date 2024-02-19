@@ -6,7 +6,11 @@ import { validate } from '../../../common/dist/util';
 import { Post } from '../models/post';
 import { PostCreatedPublisher, PostUpdatedPublisher } from '../publishers';
 
-const schema = z.object({ title: z.string(), content: z.string(), comments: z.array(z.any()) });
+const schema = z.object({
+  title: z.string(),
+  content: z.string(),
+  comments: z.array(z.any()).optional(),
+});
 type PostParam = { id: string };
 type PostBody = z.TypeOf<typeof schema>;
 
@@ -45,7 +49,7 @@ export async function update(
   request: FastifyRequest<{ Body: PostBody; Params: PostParam }>,
   reply: FastifyReply
 ) {
-  const { title, content, comments } = request.body;
+  const { title, content } = request.body;
   const { id } = request.params;
 
   const validationErrors = validate(request.body, schema);
@@ -62,7 +66,7 @@ export async function update(
     throw new NotAuthorizedError('Not authorized to update post');
   }
 
-  post.set({ title, content, comments });
+  post.set({ title, content });
   await post.save();
 
   new PostUpdatedPublisher(nats.nc).publish({ id: post.id, title, content, userId: post.userId });

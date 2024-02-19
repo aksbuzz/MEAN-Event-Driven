@@ -16,11 +16,7 @@ export class CommentCreatedSubscriber extends BaseSubscriber<CommentCreatedEvent
       if (!post) {
         throw new NotFoundError('Post');
       }
-
-      // TODO
-      const existingComments = post.comments;
-      post.set({ comments: [...existingComments, commentId] });
-      post.save();
+      await post.updateOne({ $push: { comments: commentId } });
 
       console.log(`Added comment (ID: ${commentId}) to post ${postId}`);
     } catch (error) {

@@ -1,6 +1,7 @@
 import fastify from 'fastify';
+import mongoose from 'mongoose';
 import { RouteNotFoundError } from '../../common/dist/errors';
-import { nats, newDbConnection } from '../../common/dist/infrastructure';
+import { nats } from '../../common/dist/infrastructure';
 import { errorHandler, jwtAuth } from '../../common/dist/middlewares';
 import { registerRoutes } from './routes';
 import { PostCreatedSubscriber } from './subscribers';
@@ -8,7 +9,7 @@ import { PostCreatedSubscriber } from './subscribers';
 async function startDb() {
   try {
     console.log('Connecting to MongoDB');
-    await newDbConnection({ uri: 'mongodb://localhost:27017/comments' });
+    await mongoose.connect('mongodb://localhost:27017/comments');
     console.log('MongoDB is connected');
   } catch (error) {
     console.log('MongoDB connection unsuccessful. ', error);

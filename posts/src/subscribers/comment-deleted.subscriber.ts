@@ -16,10 +16,7 @@ export class CommentDeletedSubscriber extends BaseSubscriber<CommentDeletedEvent
       if (!post) {
         throw new NotFoundError('Post');
       }
-
-      // TODO
-      post.updateOne({ _id: postId, $pull: { comments: commentId } });
-      post.save();
+      await post.updateOne({ $pull: { comments: commentId } });
 
       console.log(`Removed comment (ID: ${commentId}) from post ${postId}`);
     } catch (error) {

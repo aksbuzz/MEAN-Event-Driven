@@ -1,13 +1,13 @@
 import fastify from 'fastify';
 import { RouteNotFoundError } from '../../common/dist/errors';
-import { newDbConnection } from '../../common/dist/infrastructure';
+import mongoose from 'mongoose';
 import { errorHandler, jwtAuth } from '../../common/dist/middlewares';
 import { registerRoutes } from './routes';
 
 async function startDb() {
   try {
     console.log('Connecting to MongoDB');
-    await newDbConnection({ uri: 'mongodb://localhost:27017/auth' });
+    await mongoose.connect('mongodb://localhost:27017/auth');
     console.log('MongoDB is connected');
   } catch (error) {
     console.log('MongoDB connection unsuccessful. ', error);
