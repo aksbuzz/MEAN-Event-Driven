@@ -1,6 +1,7 @@
 import fastify from 'fastify';
-import { RouteNotFoundError } from '../../common/dist/errors';
 import mongoose from 'mongoose';
+import { RouteNotFoundError } from '../../common/dist/errors';
+import { nats } from '../../common/dist/infrastructure';
 import { errorHandler, jwtAuth } from '../../common/dist/middlewares';
 import { registerRoutes } from './routes';
 
@@ -11,6 +12,19 @@ async function startDb() {
     console.log('MongoDB is connected');
   } catch (error) {
     console.log('MongoDB connection unsuccessful. ', error);
+    process.exit(1);
+  }
+}
+
+async function startNatsServer() {
+  try {
+    console.log('Connecting to NATS');
+    await nats.connect();
+    console.log('Connected to NATS');
+    // process.on('SIGINT', () => nats.nc.close());
+    // process.on('SIGTERM', () => nats.nc.close());
+  } catch (error) {
+    console.log('NATS connection unsuccessful. ', error);
     process.exit(1);
   }
 }
@@ -44,6 +58,7 @@ async function startServer() {
 
 async function main() {
   await startDb();
+  await startNatsServer();
   await startServer();
 }
 

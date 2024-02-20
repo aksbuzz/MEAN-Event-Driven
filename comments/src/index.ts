@@ -4,7 +4,7 @@ import { RouteNotFoundError } from '../../common/dist/errors';
 import { nats } from '../../common/dist/infrastructure';
 import { errorHandler, jwtAuth } from '../../common/dist/middlewares';
 import { registerRoutes } from './routes';
-import { PostCreatedSubscriber } from './subscribers';
+import { PostQuerySubscriber } from './subscribers';
 
 async function startDb() {
   try {
@@ -62,7 +62,7 @@ async function main() {
   await startNatsServer();
   await startServer();
 
-  new PostCreatedSubscriber(nats.nc).subscribe();
+  new PostQuerySubscriber(nats.nc).subscribe();
 }
 
 main();

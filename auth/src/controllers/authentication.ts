@@ -1,8 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { BadRequestError, NotFoundError } from '../../../common/dist/errors';
+import { nats } from '../../../common/dist/infrastructure';
 import { generateToken, validate } from '../../../common/dist/util';
 import { User, UserRequest } from '../models/user';
+import { UserCreatedPublisher } from '../publishers';
 import { comparePassword, toHash } from '../util/password-hash';
 
 const schema = z.object({
@@ -54,6 +56,8 @@ export const signup = async (
   const hashedPassword = await toHash(password);
   const user = new User({ email, password: hashedPassword });
   await user.save();
+
+  new UserCreatedPublisher(nats.nc).publish({ email, userId: user.id });
 
   const token = generateToken(user.id);
   reply.status(201).send({ token });

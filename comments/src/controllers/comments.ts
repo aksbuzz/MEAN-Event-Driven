@@ -4,7 +4,7 @@ import { BadRequestError, NotAuthorizedError, NotFoundError } from '../../../com
 import { nats } from '../../../common/dist/infrastructure';
 import { validate } from '../../../common/dist/util';
 import { Comment } from '../models/comment';
-import { CommentCreatedPublisher, CommentUpdatedPublisher } from '../publishers';
+import { CommentCreatedPublisher } from '../publishers';
 
 const schema = z.object({
   content: z.string(),
@@ -47,12 +47,6 @@ export async function update(
 
   comment.set({ ...request.body });
   await comment.save();
-
-  new CommentUpdatedPublisher(nats.nc).publish({
-    id: comment.id,
-    postId: request.body.postId,
-    content: request.body.content,
-  });
 
   reply.status(200).send(comment);
 }

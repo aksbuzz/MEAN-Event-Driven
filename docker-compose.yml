@@ -8,12 +8,26 @@ services:
     depends_on:
       - backend
     environment:
-      - AUTH_SERVER_ADDR=backend:3000
+      - AUTH_SERVER_ADDR=backend:3001
+      - POST_SERVER_ADDR=backend:3002
+      - COMMENT_SERVER_ADDR=backend:3003
     volumes:
       - type: bind
         source: ./nginx/nginx.conf
         target: /etc/nginx/conf.d/default.conf
         read_only: true
+  
+  common:
+    build:
+      context: ./common
+      dockerfile: Dockerfile
+  
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    depends_on:
+      - common
   
   backend:
     build:
