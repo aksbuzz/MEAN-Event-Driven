@@ -1,11 +1,11 @@
+import { nats } from '@aksbuzz/common';
 import mongoose from 'mongoose';
-import { nats } from '../../common/dist/infrastructure';
 import { PostCreatedSubscriber, UserCreatedSubscriber } from './subscribers';
 
 async function startDb() {
   try {
     console.log('Connecting to MongoDB');
-    await mongoose.connect('mongodb://localhost:27017/marketing');
+    await mongoose.connect(process.env.MONGO_URL!);
     console.log('MongoDB is connected');
   } catch (error) {
     console.log('MongoDB connection unsuccessful. ', error);
@@ -16,7 +16,7 @@ async function startDb() {
 async function startNatsServer() {
   try {
     console.log('Connecting to NATS');
-    await nats.connect();
+    await nats.connect({ servers: process.env.NATS_URL! });
     console.log('Connected to NATS');
   } catch (error) {
     console.log('NATS connection unsuccessful. ', error);

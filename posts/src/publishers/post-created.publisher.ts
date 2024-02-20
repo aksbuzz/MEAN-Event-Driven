@@ -1,4 +1,4 @@
-import { BasePublisher } from '../../../common/dist/publishers';
+import { BasePublisher } from '@aksbuzz/common';
 import { PostCreatedEvent } from '../events';
 
 export class PostCreatedPublisher extends BasePublisher<PostCreatedEvent> {

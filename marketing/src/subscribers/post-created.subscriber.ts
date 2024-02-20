@@ -1,5 +1,4 @@
-import { BaseSubscriber } from '../../../common/dist/subscribers';
-import { NotFoundError } from '../../../common/dist/errors';
+import { BaseSubscriber, NotFoundError } from '@aksbuzz/common';
 import { PostCreatedEvent } from '../events';
 import { Marketing } from '../models/marketing';
 

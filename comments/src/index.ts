@@ -1,15 +1,13 @@
+import { RouteNotFoundError, errorHandler, jwtAuth, nats } from '@aksbuzz/common';
 import fastify from 'fastify';
 import mongoose from 'mongoose';
-import { RouteNotFoundError } from '../../common/dist/errors';
-import { nats } from '../../common/dist/infrastructure';
-import { errorHandler, jwtAuth } from '../../common/dist/middlewares';
 import { registerRoutes } from './routes';
 import { PostQuerySubscriber } from './subscribers';
 
 async function startDb() {
   try {
     console.log('Connecting to MongoDB');
-    await mongoose.connect('mongodb://localhost:27017/comments');
+    await mongoose.connect(process.env.MONGO_URL!);
     console.log('MongoDB is connected');
   } catch (error) {
     console.log('MongoDB connection unsuccessful. ', error);
@@ -20,7 +18,7 @@ async function startDb() {
 async function startNatsServer() {
   try {
     console.log('Connecting to NATS');
-    await nats.connect();
+    await nats.connect({ servers: process.env.NATS_URL! });
     console.log('Connected to NATS');
     // process.on('SIGINT', () => nats.nc.close());
     // process.on('SIGTERM', () => nats.nc.close());
@@ -49,7 +47,7 @@ async function startServer() {
   server.setErrorHandler(errorHandler);
 
   try {
-    await server.listen({ port: 3003 });
+    await server.listen({ port: 3003, host: '0.0.0.0' });
     server.log.info(`Server listening on 3003`);
   } catch (error) {
     server.log.error(error);

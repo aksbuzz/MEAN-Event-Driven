@@ -1,5 +1,5 @@
+import { NotAuthorizedError } from '@aksbuzz/common';
 import { RouteHandlerMethod } from 'fastify';
-import { NotAuthorizedError } from '../../../common/dist/errors';
 import { User } from '../models/user';
 
 export const current: RouteHandlerMethod = async (request, reply) => {

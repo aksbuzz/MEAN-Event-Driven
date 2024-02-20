@@ -2,8 +2,8 @@ import { NatsConnection, connect as natsConnect } from 'nats';
 
 class Nats {
   private _nc?: NatsConnection;
-  async connect() {
-    this._nc = await natsConnect();
+  async connect({ servers }: { servers: string | string[] }) {
+    this._nc = await natsConnect({ servers });
     console.log(`connected to ${this._nc.getServer()}`);
   }
 

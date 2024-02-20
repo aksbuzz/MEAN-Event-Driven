@@ -1,4 +1,4 @@
-import { BaseSubscriber } from '../../../common/dist/subscribers';
+import { BaseSubscriber } from '@aksbuzz/common';
 import { UserCreatedEvent } from '../events';
 import { Marketing } from '../models/marketing';
 

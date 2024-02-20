@@ -6,40 +6,69 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend
-    environment:
-      - AUTH_SERVER_ADDR=backend:3001
-      - POST_SERVER_ADDR=backend:3002
-      - COMMENT_SERVER_ADDR=backend:3003
+      - auth
+      - posts
+      - comments
+      - marketing
     volumes:
       - type: bind
-        source: ./nginx/nginx.conf
+        source: ./nginx.conf
         target: /etc/nginx/conf.d/default.conf
         read_only: true
-  
-  common:
-    build:
-      context: ./common
-      dockerfile: Dockerfile
   
   auth:
     build:
       context: ./auth
       dockerfile: Dockerfile
     depends_on:
-      - common
+      - nats
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/auth
+      - NATS_URL=nats://nats:4222
   
-  backend:
+  posts:
     build:
-      context: .
+      context: ./posts
       dockerfile: Dockerfile
     depends_on:
-      - db
+      - nats
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/posts
+      - NATS_URL=nats://nats:4222
+  
+  comments:
+    build:
+      context: ./comments
+      dockerfile: Dockerfile
+    depends_on:
+      - nats
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/comments
+      - NATS_URL=nats://nats:4222
+  
+  marketing:
+    build:
+      context: ./marketing
+      dockerfile: Dockerfile
+    depends_on:
+      - nats
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/marketing
+      - NATS_URL=nats://nats:4222
 
-  db:
-    image: mongo
+  mongo:
+    image: mongo:latest
     volumes:
       - mongodb_data:/data/db
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
 
 volumes:
   mongodb_data:

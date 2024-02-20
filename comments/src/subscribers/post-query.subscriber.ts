@@ -1,4 +1,4 @@
-import { BaseSubscriber } from '../../../common/dist/subscribers';
+import { BaseSubscriber } from '@aksbuzz/common';
 import { PostQueryEvent } from '../events/post-query.event';
 import { Comment } from '../models/comment';
 
