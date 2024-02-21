@@ -1,5 +1,6 @@
 import {
   BadRequestError,
+  ConflictError,
   NotFoundError,
   composeResponse,
   generateToken,
@@ -55,7 +56,7 @@ export const signup = async (
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    throw new BadRequestError({ email: 'User with this email already exists' });
+    throw new ConflictError(email);
   }
 
   const hashedPassword = await toHash(password);

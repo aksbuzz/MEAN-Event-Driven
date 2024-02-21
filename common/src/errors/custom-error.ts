@@ -32,3 +32,9 @@ export class NotAuthorizedError extends CustomError {
     super(message, 401, 'NOT_AUTHORIZED');
   }
 }
+
+export class ConflictError extends CustomError {
+  constructor(name: string) {
+    super(`${name} already exists.`, 409, 'CONFLICT');
+  }
+}

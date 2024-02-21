@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aksbuzz/common": "^3.0.0",
+    "@aksbuzz/common": "^3.1.0",
     "@fastify/mongodb": "^8.0.0",
     "fastify": "^4.26.1",
     "mongoose": "^8.1.3",

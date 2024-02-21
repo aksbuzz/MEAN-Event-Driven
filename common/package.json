@@ -1,6 +1,6 @@
 {
   "name": "@aksbuzz/common",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Common module for Mongo, Fastify, Angular, Node, Nats",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
