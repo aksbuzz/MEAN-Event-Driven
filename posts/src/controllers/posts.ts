@@ -2,6 +2,7 @@ import {
   BadRequestError,
   NotAuthorizedError,
   NotFoundError,
+  composeResponse,
   nats,
   validate,
 } from '@aksbuzz/common';
@@ -20,7 +21,7 @@ type PostBody = z.TypeOf<typeof schema>;
 
 export async function getPosts(_request: FastifyRequest, reply: FastifyReply) {
   const posts = await Post.find({});
-  reply.status(200).send(posts);
+  reply.status(200).send(composeResponse(posts));
 }
 
 export async function getPost(request: FastifyRequest<{ Params: PostParam }>, reply: FastifyReply) {
@@ -33,7 +34,7 @@ export async function getPost(request: FastifyRequest<{ Params: PostParam }>, re
   const comments = await new PostQueryPublisher(nats.nc).request({ id }, { timeout: 1000 });
   const response = { ...post.toJSON(), comments };
 
-  reply.status(200).send(response);
+  reply.status(200).send(composeResponse(response));
 }
 
 export async function create(request: FastifyRequest<{ Body: PostBody }>, reply: FastifyReply) {
@@ -49,7 +50,7 @@ export async function create(request: FastifyRequest<{ Body: PostBody }>, reply:
 
   new PostCreatedPublisher(nats.nc).publish({ userId: post.userId });
 
-  reply.status(201).send(post);
+  reply.status(201).send(composeResponse(post));
 }
 
 export async function update(
@@ -76,5 +77,5 @@ export async function update(
   post.set({ title, content });
   await post.save();
 
-  reply.status(200).send(post);
+  reply.status(200).send(composeResponse(post));
 }

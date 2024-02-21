@@ -2,6 +2,7 @@ import {
   BadRequestError,
   NotAuthorizedError,
   NotFoundError,
+  composeResponse,
   nats,
   validate,
 } from '@aksbuzz/common';
@@ -28,7 +29,7 @@ export async function create(request: FastifyRequest<{ Body: CommentBody }>, rep
 
   new CommentCreatedPublisher(nats.nc).publish({ id: comment.id, postId: request.body.postId });
 
-  reply.status(201).send(comment);
+  reply.status(201).send(composeResponse(comment));
 }
 
 export async function update(
@@ -52,5 +53,5 @@ export async function update(
   comment.set({ ...request.body });
   await comment.save();
 
-  reply.status(200).send(comment);
+  reply.status(200).send(composeResponse(comment));
 }

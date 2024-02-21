@@ -1,4 +1,4 @@
-import { NotAuthorizedError } from '@aksbuzz/common';
+import { NotAuthorizedError, composeResponse } from '@aksbuzz/common';
 import { RouteHandlerMethod } from 'fastify';
 import { User } from '../models/user';
 
@@ -9,5 +9,5 @@ export const current: RouteHandlerMethod = async (request, reply) => {
     throw new NotAuthorizedError('Authentication token is invalid. User not found.');
   }
 
-  reply.status(200).send({ user });
+  reply.status(200).send(composeResponse({ user }));
 };

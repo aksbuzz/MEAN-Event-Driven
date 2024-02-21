@@ -1,4 +1,11 @@
-import { BadRequestError, NotFoundError, generateToken, nats, validate } from '@aksbuzz/common';
+import {
+  BadRequestError,
+  NotFoundError,
+  composeResponse,
+  generateToken,
+  nats,
+  validate,
+} from '@aksbuzz/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { User, UserRequest } from '../models/user';
@@ -32,7 +39,7 @@ export const signin = async (
   }
 
   const token = generateToken(user.id);
-  reply.status(200).send({ token });
+  reply.status(200).send(composeResponse({ token }));
 };
 
 export const signup = async (
@@ -58,5 +65,5 @@ export const signup = async (
   new UserCreatedPublisher(nats.nc).publish({ email, userId: user.id });
 
   const token = generateToken(user.id);
-  reply.status(201).send({ token });
+  reply.status(201).send(composeResponse({ token }));
 };
