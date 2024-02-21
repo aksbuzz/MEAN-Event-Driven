@@ -1,15 +1,40 @@
-We'll build a microservice architecture.
-Will have an Event Driven Arch.
+# Blog App
 
-- Event Queue: will provide a queuing mechanism for the post and comment objects
+This application is a learning project consisting of four services: auth, posts, comments, and marketing. It provides users with the ability to create an account, obtain a token, and use that token to manage posts and comments. Additionally, the marketing service sends an email to users upon creating their first post, triggered by an event from the posts service. The marketing service uses eventual consistency to update its database when receiving events from other services.
 
-- Post Service: creating, updating, and deleting posts.
+# Technologies Used
 
-- Comment Service: creating, updating, and deleting comments. Will have a parent _PostId_.
+- Backend Server: Fastify
+- Database: MongoDB
+- Frontend Framework: AngularJS
+- Message Broker: Nats
+- Web Server and Load Balancer: Nginx
+- Containerization: Docker
+- API Documentation: Swagger
 
-- Lookup Service: only service accessible by the front-end.
+# Setup Instructions
 
-## NATS
+- Clone the repo
 
-- We will connect our backend code to work with the frontend code.
-- We will generate messages using NATS so that the individual microservices can communicate with each other
+  ```
+  git clone <repository-url>
+  ```
+
+- Start Docker Engine
+
+- Execute following command
+
+  ```
+  docker compose -f "docker-compose.yml" up -d --build
+  ```
+
+- Access api on
+  ```
+  http://localhost
+  ```
+
+# Todo
+
+1. Expose swagger
+2. Add frontend with angular.
+3. Use orchestration tool. eg., kubernetes
