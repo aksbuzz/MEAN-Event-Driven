@@ -17,7 +17,7 @@ This application is a learning project consisting of four services: auth, posts,
 - Clone the repo
 
   ```
-  git clone <repository-url>
+  git clone https://github.com/aksbuzz/MEAN-Event-Driven.git
   ```
 
 - Start Docker Engine
